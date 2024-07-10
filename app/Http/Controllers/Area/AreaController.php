@@ -13,7 +13,9 @@ class AreaController extends Controller
      */
     public function index()
     {
-        //
+        $areas = Area::query()->get();
+
+        return view('admin.areas.index', compact('areas'));
     }
 
     /**
@@ -21,7 +23,7 @@ class AreaController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.areas.create');
     }
 
     /**
@@ -29,15 +31,22 @@ class AreaController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        // area model have name address longtitude and latitude
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'longitude' => ['required', 'string', 'max:255'],
+            'latitude' => ['required', 'string', 'max:255'],
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Area $area)
-    {
-        //
+        Area::query()->create([
+            'name' => $request->name,
+            'address' => $request->address,
+            'longitude' => $request->longitude,
+            'latitude' => $request->latitude,
+        ]);
+
+        return redirect()->route('admin.areas.index');
     }
 
     /**
@@ -45,7 +54,7 @@ class AreaController extends Controller
      */
     public function edit(Area $area)
     {
-        //
+        return view('admin.areas.edit', compact('area'));
     }
 
     /**
@@ -53,7 +62,21 @@ class AreaController extends Controller
      */
     public function update(Request $request, Area $area)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'longitude' => ['required', 'string', 'max:255'],
+            'latitude' => ['required', 'string', 'max:255'],
+        ]);
+
+        $area->update([
+            'name' => $request->name,
+            'address' => $request->address,
+            'longitude' => $request->longitude,
+            'latitude' => $request->latitude,
+        ]);
+
+        return redirect()->route('admin.areas.index');
     }
 
     /**
@@ -61,6 +84,8 @@ class AreaController extends Controller
      */
     public function destroy(Area $area)
     {
-        //
+        $area->delete();
+
+        return redirect()->route('admin.areas.index');
     }
 }

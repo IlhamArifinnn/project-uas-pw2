@@ -13,7 +13,9 @@ class TypeController extends Controller
      */
     public function index()
     {
-        //
+        $types = Type::query()->get();
+
+        return view('admin.vehicle-types.index', compact('types'));
     }
 
     /**
@@ -21,7 +23,7 @@ class TypeController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.vehicle-types.create');
     }
 
     /**
@@ -29,15 +31,19 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'desc' => ['nullable', 'string', 'max:255'],
+            'price_hour' => ['required', 'integer'],
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Type $type)
-    {
-        //
+        Type::query()->create([
+            'name' => $request->name,
+            'desc' => $request->desc,
+            'price_hour' => $request->price_hour,
+        ]);
+
+        return redirect()->route('admin.vehicle-types.index');
     }
 
     /**
@@ -45,7 +51,7 @@ class TypeController extends Controller
      */
     public function edit(Type $type)
     {
-        //
+        return view('admin.vehicle-types.edit', compact('type'));
     }
 
     /**
@@ -53,7 +59,19 @@ class TypeController extends Controller
      */
     public function update(Request $request, Type $type)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'desc' => ['nullable', 'string', 'max:255'],
+            'price_hour' => ['required', 'integer'],
+        ]);
+
+        $type->update([
+            'name' => $request->name,
+            'desc' => $request->desc,
+            'price_hour' => $request->price_hour,
+        ]);
+
+        return redirect()->route('admin.vehicle-types.index');
     }
 
     /**
@@ -61,6 +79,8 @@ class TypeController extends Controller
      */
     public function destroy(Type $type)
     {
-        //
+        $type->delete();
+
+        return redirect()->route('admin.vehicle-types.index');
     }
 }

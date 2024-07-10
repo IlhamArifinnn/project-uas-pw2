@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Area;
 
 use App\Http\Controllers\Controller;
+use App\Models\Area\Area;
 use App\Models\Area\Parking;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,9 @@ class ParkingController extends Controller
      */
     public function index()
     {
-        //
+        $parkings = Parking::query()->get();
+
+        return view('admin.parkings.index', compact('parkings'));
     }
 
     /**
@@ -21,7 +24,9 @@ class ParkingController extends Controller
      */
     public function create()
     {
-        //
+        $areas = Area::get();
+
+        return view('admin.parkings.create', compact('areas'));
     }
 
     /**
@@ -29,15 +34,22 @@ class ParkingController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        // the parking model need area_id (from area model), name, capacity, desc (nullable)
+        $request->validate([
+            'area_id' => ['required', 'exists:areas,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'capacity' => ['required', 'integer'],
+            'desc' => ['nullable', 'string', 'max:255'],
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Parking $parking)
-    {
-        //
+        Parking::query()->create([
+            'area_id' => $request->area_id,
+            'name' => $request->name,
+            'capacity' => $request->capacity,
+            'desc' => $request->desc,
+        ]);
+
+        return redirect()->route('admin.parkings.index');
     }
 
     /**
@@ -45,7 +57,9 @@ class ParkingController extends Controller
      */
     public function edit(Parking $parking)
     {
-        //
+        $areas = Area::get();
+
+        return view('admin.parkings.edit', compact('parking', 'areas'));
     }
 
     /**
@@ -53,7 +67,21 @@ class ParkingController extends Controller
      */
     public function update(Request $request, Parking $parking)
     {
-        //
+        $request->validate([
+            'area_id' => ['required', 'exists:areas,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'capacity' => ['required', 'integer'],
+            'desc' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $parking->update([
+            'area_id' => $request->area_id,
+            'name' => $request->name,
+            'capacity' => $request->capacity,
+            'desc' => $request->desc,
+        ]);
+
+        return redirect()->route('admin.parkings.index');
     }
 
     /**
@@ -61,6 +89,8 @@ class ParkingController extends Controller
      */
     public function destroy(Parking $parking)
     {
-        //
+        $parking->delete();
+
+        return redirect()->route('admin.parkings.index');
     }
 }
