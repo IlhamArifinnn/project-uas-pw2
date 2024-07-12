@@ -11,6 +11,7 @@
                     <div class="col-span-12">
                         <form action="{{ route('admin.users.update', $transaction->id) }}" method="post">
                             @csrf
+                            @method('patch')
 
                             <div class="mb-4">
                                 <label for="vehicle_id" class="block font-medium text-gray-700 dark:text-gray-100 mb-2">Vehicle</label>

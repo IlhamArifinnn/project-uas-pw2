@@ -31,7 +31,6 @@ class AreaController extends Controller
      */
     public function store(Request $request)
     {
-        // area model have name address longtitude and latitude
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],

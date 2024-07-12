@@ -10,4 +10,9 @@ class Parking extends Model
     use HasFactory;
 
     protected $table = 'area_parkings';
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
 }
